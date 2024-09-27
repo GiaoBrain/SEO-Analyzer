@@ -1,0 +1,53 @@
+<?php
+
+namespace App\Rules;
+
+use Illuminate\Contracts\Validation\Rule;
+
+class ValidateKeywordsCountRule implements Rule
+{
+    /**
+     * The input attribute
+     *
+     * @var
+     */
+    private $attribute;
+
+    /**
+     * Create a new rule instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //
+    }
+
+    /**
+     * Determine if the validation rule passes.
+     *
+     * @param  string  $attribute
+     * @param  mixed  $value
+     * @return bool
+     */
+    public function passes($attribute, $value)
+    {
+        $this->attribute = $attribute;
+
+        if (count(preg_split('/\n|\r/', $value, -1, PREG_SPLIT_NO_EMPTY)) > config('settings.ke_keywords')) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Get the validation error message.
+     *
+     * @return string
+     */
+    public function message()
+    {
+        return __('The number of :attribute must not exceed :value.', ['attribute' => $this->attribute, 'value' => config('settings.ke_keywords')]);
+    }
+}

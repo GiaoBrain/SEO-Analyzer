@@ -1,0 +1,32 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+ 
+    RewriteBase /
+	RewriteCond %{HTTP_HOST} ^www.checkseo.org [NC]
+	RewriteRule ^(.*)$ https://checkseo.org/$1 [L,R=301]
+	
+	#hide /public from url
+	RewriteCond %{THE_REQUEST} \s/public/
+    RewriteRule (.*) /$1 [L,NC,R=301]
+
+	# Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Handle Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+	
+	# Disable server signature
+	ServerSignature Off
+</IfModule>
